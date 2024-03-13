@@ -206,9 +206,9 @@ int findDominantOp(int p, int q) {
   printf("[p=%d, q=%d]\n",p,q);
   assert(0);
 }
-
+//递归求值
 uint32_t eval(int p, int q) {
-  if(p > q) {
+  if(p > q) { //错误解析
     printf("error:p>q in eval, p = %d, q = %d\n", p, q);
     assert(0);
   }
