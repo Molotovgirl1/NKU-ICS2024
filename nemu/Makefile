@@ -42,6 +42,7 @@ $(BINARY): $(OBJS)
 	@$(LD) -O2 -o $@ $^ -lSDL2 -lreadline
 
 run: $(BINARY)
+	$(call git_commit, "run")
 	$(NEMU_EXEC)
 
 gdb: $(BINARY)
