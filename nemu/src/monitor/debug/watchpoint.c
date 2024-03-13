@@ -95,7 +95,7 @@ void print_wp() {
   } 
   printf("watchpoint:\n"); 
   printf("NO.  expr    hitTimes\n"); 
-  wptemp = head; //从head开始遍历
+  wptemp = head; 
   while (wptemp != NULL) 
   { 
     printf("%d  %s    %d\n", wptemp -> NO, wptemp -> e, wptemp -> hitNum); 
