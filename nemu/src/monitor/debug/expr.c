@@ -33,18 +33,18 @@ static struct rule {
   {" +", TK_NOTYPE},    // spaces
   {"\\+", '+'},         // plus
   {"==", TK_EQ},         // equal
-  {"0x[0-9A-Fa-f][0-9A-Fa-f]*", TK_HEX},
-  {"0|[1-9][0-9]*", TK_NUMBER},
-  {"\\$(eax|ecx|edx|ebx|esp|ebp|esi|edi|eip|ax|cx|dx|bx|sp|bp|si|di|al|cl|dl|bl|ah|ch|dh|bh)", TK_REG},
-  {"!=", TK_NEQ},
-  {"&&", TK_AND},
-  {"\\|\\|", TK_OR},
-  {"!", '!'},    
-  {"-", '-'},
-  {"\\*", '*'},
-  {"\\/", '/'},
-  {"\\(", '('},
-  {"\\)", ')'},
+  {"0x[0-9A-Fa-f][0-9A-Fa-f]*", TK_HEX}, //十六进制数
+  {"0|[1-9][0-9]*", TK_NUMBER},  //十进制数
+  {"\\$(eax|ecx|edx|ebx|esp|ebp|esi|edi|eip|ax|cx|dx|bx|sp|bp|si|di|al|cl|dl|bl|ah|ch|dh|bh)", TK_REG}, //寄存器
+  {"!=", TK_NEQ}, //不等于
+  {"&&", TK_AND}, //与
+  {"\\|\\|", TK_OR}, //或
+  {"!", '!'},  //非
+  {"-", '-'}, //减
+  {"\\*", '*'}, //乘
+  {"\\/", '/'}, //除
+  {"\\(", '('}, //左括号
+  {"\\)", ')'}, //右括号
   
 };
 
@@ -59,16 +59,14 @@ void init_regex() {
   int i;
   char error_msg[128];
   int ret;
-
   for (i = 0; i < NR_REGEX; i ++) {
     ret = regcomp(&re[i], rules[i].regex, REG_EXTENDED);
     if (ret != 0) {
       regerror(ret, &re[i], error_msg, 128);
-      panic("regex compilation failed: %s\n%s", error_msg, rules[i].regex);
+      panic("ERROR:regex compilation failed: %s\n%s", error_msg, rules[i].regex);
     }
   }
 }
-
 typedef struct token {
   int type;
   char str[32];
@@ -106,17 +104,17 @@ static bool make_token(char *e) {
           break; 
         } 
         else { 
-          tokens[nr_token].type = rules[i].token_type; 
+          tokens[nr_token].type = rules[i].token_type; //类型赋值
           switch (rules[i].token_type) { 
-          case TK_NUMBER: //数字
+          case TK_NUMBER: //数字直接加入
             strncpy(tokens[nr_token].str, substr_start, substr_len); 
             *(tokens[nr_token].str + substr_len) = '\0'; 
             break; 
-          case TK_HEX: //16进制数
+          case TK_HEX: //16进制数除去0x
             strncpy(tokens[nr_token].str, substr_start + 2, substr_len - 2); 
             *(tokens[nr_token].str + substr_len - 2) = '\0'; 
             break; 
-          case TK_REG:  //寄存器
+          case TK_REG:  //寄存器除去$
             strncpy(tokens[nr_token].str, substr_start + 1, substr_len - 1); 
             *(tokens[nr_token].str + substr_len - 1) = '\0'; 
           } 
@@ -126,8 +124,8 @@ static bool make_token(char *e) {
         } 
       } 
     } 
-    if (i == NR_REGEX) {
-      printf("no match at position %d\n%s\n%*.s^\n", position, e, position, "");
+    if (i == NR_REGEX) { //没有匹配到任何规则
+      printf("ERROR:no match at position %d\n%s\n%*.s^\n", position, e, position, "");
       return false;
     }
   }
@@ -137,13 +135,11 @@ static bool make_token(char *e) {
 
 //判断括号的匹配 
 bool check_parentheses(int p, int q) {
-  if(p >= q) {
-    //右括号个数少于左括号
-    printf("error: p >= q in check_parntheses\n");
+  if(p >= q) { //如果右括号个数少于左括号
+    printf("ERROR: p >= q in check_parntheses\n");
     return false;
   }
-  if(tokens[p].type != '(' || tokens[q].type != ')'){
-    //括号不匹配
+  if(tokens[p].type != '(' || tokens[q].type != ')'){//括号不匹配
     return false;
   }
   int cnt = 0; //记录当前未匹配的左括号的数目
@@ -155,20 +151,19 @@ bool check_parentheses(int p, int q) {
       if(cnt != 0) {
         cnt--;
       }
-      else {
-        //左右括号不匹配
+      else { //左右括号数量不匹配
         return false;
       }
     }
   }
-  if(cnt == 0) {
+  if(cnt == 0) { //左括号等于右括号
     return true;
   }
   else {
     return false;
   }
 } 
-
+//寻找主运算
 int findDominantOp(int p, int q) {
   int level=0;
   int pos[5]={-1, -1, -1, -1, -1};
@@ -190,10 +185,10 @@ int findDominantOp(int p, int q) {
           pos[4] = i;
         }
       }
-      if(tokens[i].type=='(') {
+      if(tokens[i].type=='(') { //遇到左括号
         level++;
       }
-      if(tokens[i].type==')') {
+      if(tokens[i].type==')') { //遇到右括号
         level--;
       }
   }
@@ -202,27 +197,27 @@ int findDominantOp(int p, int q) {
       return pos[i];
     }
   }
-  printf("error in findDominantOp\n");
+  printf("ERROR:error in findDominantOp\n");
   printf("[p=%d, q=%d]\n",p,q);
   assert(0);
 }
 //递归求值
 uint32_t eval(int p, int q) {
   if(p > q) { //错误解析
-    printf("error:p>q in eval, p = %d, q = %d\n", p, q);
+    printf("ERROR:p>q in eval, p = %d, q = %d\n", p, q);
     assert(0);
   }
-  if(p == q) {
+  if(p == q) { //单个字符
     int num;
     switch (tokens[p].type){
-      case TK_NUMBER: //数字
+      case TK_NUMBER: //十进制数字
         sscanf(tokens[p].str, "%d", &num);
         return num;
-      case TK_HEX: //16进制数
+      case TK_HEX: //十六进制数
         sscanf(tokens[p].str, "%x", &num);
         return num;
-      case TK_REG: //寄存器
-        for(int i = 0; i < 8; i++) {
+      case TK_REG: //寄存器 
+        for(int i = 0; i < 8; i++) { //依次遍历
           if(strcmp(tokens[p].str, regsl[i]) == 0) {
             return reg_l(i);
           }
@@ -234,10 +229,10 @@ uint32_t eval(int p, int q) {
           }
         }
         if(strcmp(tokens[p].str, "eip") == 0) {
-          return cpu.eip;
+          return cpu.eip; //eip寄存器
         }
         else {
-          printf("error in TK_REG in eval()\n");
+          printf("ERROR:error in TK_REG in eval()\n");
           assert(0);
         } 
     }
@@ -272,6 +267,7 @@ uint32_t eval(int p, int q) {
           return 1;
         }
     }
+    //双目运算符
     uint32_t val1 = eval(p, op - 1);
     uint32_t val2 = eval(op + 1, q);
     switch(tokens[op].type) {
@@ -318,20 +314,16 @@ uint32_t eval(int p, int q) {
   }
   return 1;
 }
-
+//区分负号和减号、乘号和指针
 uint32_t expr(char *e, bool *success) {
   if (!make_token(e)) {
     *success = false;
     return 0;
   }
-
-  /* TODO: Insert codes to evaluate the expression. */
-  //TODO();
-  //return 0;
   if(tokens[0].type == '-') { //处理-
     tokens[0].type = TK_NEGATIVE;
   }
-  if(tokens[0].type == '*') { //处理-
+  if(tokens[0].type == '*') { //处理*
     tokens[0].type = TK_DEREF; 
   }
   for(int i = 1; i < nr_token; i++) {
