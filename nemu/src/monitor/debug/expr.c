@@ -31,15 +31,15 @@ static struct rule {
    */
 
   {" +", TK_NOTYPE},    // spaces
-  {"\\+", '+'},         // plus
-  {"==", TK_EQ},         // equal
   {"0x[0-9A-Fa-f][0-9A-Fa-f]*", TK_HEX}, //十六进制数
   {"0|[1-9][0-9]*", TK_NUMBER},  //十进制数
-  {"\\$(eax|ecx|edx|ebx|esp|ebp|esi|edi|eip|ax|cx|dx|bx|sp|bp|si|di|al|cl|dl|bl|ah|ch|dh|bh)", TK_REG}, //寄存器
+   {"\\$(eax|ecx|edx|ebx|esp|ebp|esi|edi|eip|ax|cx|dx|bx|sp|bp|si|di|al|cl|dl|bl|ah|ch|dh|bh)", TK_REG}, //寄存器
+  {"==", TK_EQ},         // equal
   {"!=", TK_NEQ}, //不等于
   {"&&", TK_AND}, //与
   {"\\|\\|", TK_OR}, //或
   {"!", '!'},  //非
+  {"\\+", '+'},         // plus
   {"-", '-'}, //减
   {"\\*", '*'}, //乘
   {"\\/", '/'}, //除
@@ -79,9 +79,7 @@ static bool make_token(char *e) {
   int position = 0;
   int i;
   regmatch_t pmatch;
-
   nr_token = 0;
-
   while (e[position] != '\0') {
     /* Try all rules one by one. */
     for (i = 0; i < NR_REGEX; i ++) {

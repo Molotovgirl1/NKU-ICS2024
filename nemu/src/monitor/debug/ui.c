@@ -111,7 +111,6 @@ static int cmd_info(char *args) {
   }
   int temp = sscanf(args, "%c", &s);
   if(temp <= 0) { //解析失败
-    //解析失败
     printf("args error in cmd_info\n");
     return 0;
   }
@@ -120,6 +119,7 @@ static int cmd_info(char *args) {
     return 0;
   }
   if(s == 'r') { //打印寄存器信息
+ 	//32bit
     for(int i = 0; i < 8; i++) {
       printf("%s  0x%x\n", regsl[i], reg_l(i));
     }
