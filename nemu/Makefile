@@ -3,6 +3,8 @@ INC_DIR += ./include
 BUILD_DIR ?= ./build
 OBJ_DIR ?= $(BUILD_DIR)/obj
 BINARY ?= $(BUILD_DIR)/$(NAME)
+COUNT_LINE_NOW := $ ( shell find . - name "*.h" -or - name "*.c" | xargs cat | wc -l )
+COUNT_ADD := $ ( shell expr $ ( COUNT_LINE_NOW ) - 2817)
 
 include Makefile.git
 
@@ -29,7 +31,7 @@ $(OBJ_DIR)/%.o: src/%.c
 
 # Some convinient rules
 
-.PHONY: app run submit clean
+.PHONY: app run submit clean count
 app: $(BINARY)
 
 ARGS ?= -l $(BUILD_DIR)/nemu-log.txt
@@ -38,7 +40,6 @@ ARGS ?= -l $(BUILD_DIR)/nemu-log.txt
 NEMU_EXEC := $(BINARY) $(ARGS)
 
 $(BINARY): $(OBJS)
-	$(call git_commit, "compile")
 	@echo + LD $@
 	@$(LD) -O2 -o $@ $^ -lSDL2 -lreadline
 
@@ -50,5 +51,10 @@ gdb: $(BINARY)
 	$(call git_commit, "gdb")
 	gdb -s $(BINARY) --args $(NEMU_EXEC)
 
-clean: 
+iiclean: 
 	rm -rf $(BUILD_DIR)
+	
+count:
+	@echo "  $( COUNT_LINE_NOW )lines in nemu now !"
+	@echo "  $( COUNT_ADD ) lines added now !"
+	
