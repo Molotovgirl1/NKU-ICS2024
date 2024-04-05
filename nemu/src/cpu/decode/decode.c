@@ -38,10 +38,12 @@ static inline make_DopHelper(SI) {
    *
    op->simm = ???
    */
-  op->simm=instr_fetch(eip,op->width);
-  if(op->width==1){
-   op->simm=(int8_t)op->simm;
+  //TODO();
+  op -> simm = instr_fetch(eip, op -> width);
+  if(op -> width == 1) {
+    op -> simm = (int8_t)op -> simm;
   }
+
   rtl_li(&op->val, op->simm);
 
 #ifdef DEBUG
@@ -246,7 +248,7 @@ make_DHelper(gp2_Ib2E) {
 
 /* Ev <- GvIb
  * use for shld/shrd */
-make_DHelper(I_G2E) {
+make_DHelper(Ib_G2E) {
   decode_op_rm(eip, id_dest, true, id_src2, true);
   id_src->width = 1;
   decode_op_I(eip, id_src, true);
@@ -294,12 +296,6 @@ make_DHelper(out_a2I) {
   id_dest->width = 1;
   decode_op_I(eip, id_dest, true);
 }
-
-// make_DHelper(Ib_G2E) {
-//   decode_op_rm(eip, id_dest, true, id_src2, true);
-//   id_src->width = 1;
-//   decode_op_I(eip, id_src, true);
-// }
 
 make_DHelper(out_a2dx) {
   decode_op_a(eip, id_src, true);
