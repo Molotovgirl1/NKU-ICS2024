@@ -5,6 +5,13 @@ make_EHelper(nop) {
   print_asm("nop");
 }
 
+
+make_EHelper(endbr) {
+    instr_fetch(eip, id_src -> width);
+    print_asm("endbr32");
+}
+
+
 make_EHelper(inv) {
   /* invalid opcode */
 
@@ -44,3 +51,13 @@ make_EHelper(nemu_trap) {
   diff_test_skip_qemu();
 #endif
 }
+
+// make_EHelper(endbr32)
+// {
+//   decinfo.seq_pc += 3;
+//   // rtl_push(&cpu.ebp);
+//   // rtl_mv(&cpu.eax,&cpu.esp);
+//   // s0=4;
+//   // rtl_sub(&cpu.esp,&cpu.esp, &s0);
+//   print_asm("endbr32");
+// }
