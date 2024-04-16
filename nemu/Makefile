@@ -3,8 +3,6 @@ INC_DIR += ./include
 BUILD_DIR ?= ./build
 OBJ_DIR ?= $(BUILD_DIR)/obj
 BINARY ?= $(BUILD_DIR)/$(NAME)
-COUNT_LINE_NOW := $ ( shell find . - name "*.h" -or - name "*.c" | xargs cat | wc -l )
-COUNT_ADD := $ ( shell expr $ ( COUNT_LINE_NOW ) - 2817)
 
 include Makefile.git
 
@@ -15,6 +13,8 @@ CC = gcc
 LD = gcc
 INCLUDES  = $(addprefix -I, $(INC_DIR))
 CFLAGS   += -O2 -MMD -Wall -Werror -ggdb $(INCLUDES)
+COUNTLINE = $(shell find . \( -name "*.c" -or -name "*.h" \) | xargs cat | wc -l )
+COUNTADD = $(shell expr $(COUNTLINE) - 3487)
 
 # Files to be compiled
 SRCS = $(shell find src/ -name "*.c")
@@ -51,10 +51,10 @@ gdb: $(BINARY)
 	$(call git_commit, "gdb")
 	gdb -s $(BINARY) --args $(NEMU_EXEC)
 
-iiclean: 
+clean: 
 	rm -rf $(BUILD_DIR)
 	
-count:
-	@echo "  $( COUNT_LINE_NOW )lines in nemu now !"
-	@echo "  $( COUNT_ADD ) lines added now !"
+count: 
+	@echo "Total lines now:" $(COUNTLINE)
+	@echo "Lines added now:" $(COUNTADD) 
 	
