@@ -44,7 +44,7 @@ static int cmd_si(char *args) {
     N = 1;
   }
   else {
-    int temp = sscanf(args, "%lu", &N);
+    int temp = sscanf(args, "%llu", &N);
     if(temp <= 0) {
       printf("args error in cmd_si\n");
       return 0;
