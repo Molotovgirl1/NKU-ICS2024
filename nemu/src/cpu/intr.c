@@ -16,7 +16,7 @@ void raise_intr(uint8_t NO, vaddr_t ret_addr) {
 
   //2. 从intr中读取首地址
   vaddr_t gate_addr = cpu.idtr.base + NO * sizeof(GateDesc);
-  //assert(gate_addr <= cpu.idtr.base + cpu.idtr.limit);
+  assert(gate_addr <= cpu.idtr.base + cpu.idtr.limit);
 
   //3. 读取门描述符
   uint32_t off_15_0 = vaddr_read(gate_addr,2);
