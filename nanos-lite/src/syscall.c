@@ -42,9 +42,9 @@ int sys_write(int fd, void *buf, size_t len) {
 //    return fs_lseek(fd, offset, whence);
 //}
 //
-int sys_brk(int addr) {
-  return 0;
-}
+//int sys_brk(int addr) {
+//  return 0;
+//}
 //
 //int sys_close(int fd){
 //    return fs_close(fd);
@@ -67,9 +67,9 @@ _RegSet* do_syscall(_RegSet *r) {
     case SYS_write:
       SYSCALL_ARG1(r) = sys_write(a[1], (void*)a[2], a[3]);
       break;
-    case SYS_brk:
-      SYSCALL_ARG1(r) = sys_brk(a[1]);
-      break;
+//    case SYS_brk:
+//      SYSCALL_ARG1(r) = sys_brk(a[1]);
+//      break;
 //    case SYS_read:
 //      SYSCALL_ARG1(r) = sys_read(a[1],(void*)a[2],a[3]);
 //      break;
