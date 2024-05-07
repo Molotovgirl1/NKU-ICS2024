@@ -13,20 +13,13 @@ void sys_exit(int a){
 int sys_write(int fd, void *buf, size_t len) {
 	if(fd == 1 || fd == 2){
 		char c;
-    // Log("buffer:%s", (char*)buf);
 		for(int i = 0; i < len; i++) {
 			memcpy(&c ,buf + i, 1);
 			_putc(c);
 		}
 		return len;
 	}
-   else{
-     panic("Unhandled fd=%d in sys_write()",fd);
-   }
-//  if(fd >= 3) {
-//    return fs_write(fd, buf, len);
-//  }
-//  Log("fd <= 0");
+  	Log("fd <=0");
 	return -1;			
 }
 //
