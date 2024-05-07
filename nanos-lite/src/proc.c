@@ -12,7 +12,8 @@ void load_prog(const char *filename) {
   int i = nr_proc ++;
   _protect(&pcb[i].as);
 
-  uintptr_t entry = loader(&pcb[i].as, filename);
+  // uintptr_t entry = loader(&pcb[i].as, filename);
+  uintptr_t entry = loader(NULL,"/bin/text");
 
   // TODO: remove the following three lines after you have implemented _umake()
   _switch(&pcb[i].as);
