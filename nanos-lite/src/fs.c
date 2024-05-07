@@ -68,7 +68,7 @@ int fs_open(const char*filename, int flags, int mode) {
 			return i;
 		}
 	}
-	panic("this file not exist");
+	panic("this file not exist:%s",filename);
 	return -1;
 }
 
