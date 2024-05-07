@@ -13,7 +13,7 @@ void load_prog(const char *filename) {
   _protect(&pcb[i].as);
 
   // uintptr_t entry = loader(&pcb[i].as, filename);
-  uintptr_t entry = loader(NULL,"/bin/text");
+  uint32_t entry = loader(NULL,"/bin/text");
 
   // TODO: remove the following three lines after you have implemented _umake()
   _switch(&pcb[i].as);
