@@ -21,7 +21,7 @@ static Finfo file_table[] __attribute__((used)) = {
 };
 
 #define NR_FILES (sizeof(file_table) / sizeof(file_table[0]))
-
+//对文件记录表中/dev/fb的大小进行初始化
 void init_fs() {
   // TODO: initialize the size of /dev/fb
   extern void getScreen(int *p_width, int *p_height);
