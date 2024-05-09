@@ -44,3 +44,8 @@ int _read_key() {
   }
   return _KEY_NONE;
 }
+// 返回屏幕大小信息
+void getScreen(int *width, int *height) {
+  *width = _screen.width;
+  *height = _screen.height;
+}
