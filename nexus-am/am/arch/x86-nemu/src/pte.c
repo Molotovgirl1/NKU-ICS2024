@@ -67,35 +67,21 @@ void _switch(_Protect *p) {
 }
 
 void _map(_Protect *p, void *va, void *pa) {
-
-		
- uint32_t t_addr=(uint32_t)pa;
- uint32_t l_addr=(uint32_t)va;		
- uint32_t pde_offset=(l_addr>>22)&0x3ff;
- uint32_t pte_offset=(l_addr>>12)&0x3ff;
+  if(OFF(va) || OFF(pa)) {
+    // printf("page not aligned\n");
+    return;
+   }
  
- 
- uint32_t pde_addr=(uint32_t)p->ptr;
- //
- 
- uint32_t pte_addr=*((uint32_t *)(pde_addr)+pde_offset);
-
- if((pte_addr&0x1)==0){
-
-	//no pte,only pde
- pte_addr=(uint32_t)(palloc_f());
- for(int i=0;i<NR_PTE;i++){
- *((uint32_t *)(pte_addr)+i)=0;
- }
-
- *((uint32_t*)(pde_addr)+pde_offset)=pte_addr|0x1;
- *((uint32_t*)(pte_addr)+pte_offset)=t_addr|0x1;
- return;
- }
-
- *((uint32_t*)(pte_addr&0xfffff000)+pte_offset)=t_addr|0x1; 
- 
-
+  PDE *dir = (PDE*) p-> ptr;
+  PTE *table = NULL;
+  PDE *pde = dir + PDX(va);
+  if(!(*pde & PTE_P)) {
+     table = (PTE*) (palloc_f());
+     *pde = (uintptr_t) table | PTE_P;
+  }
+ table = (PTE*) PTE_ADDR(*pde);
+ PTE *pte = table + PTX(va);
+ *pte = (uintptr_t) pa | PTE_P;
 }
 
 void _unmap(_Protect *p, void *va) {
