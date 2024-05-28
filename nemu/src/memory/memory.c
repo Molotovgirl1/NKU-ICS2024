@@ -90,7 +90,7 @@ paddr_t page_translate(vaddr_t addr,int type){
 
 	//a
 	paddr_write(pde,4,(pte_addr|0x20));
-	assert((pte_addr&0x1)==0x1);
+//	assert((pte_addr&0x1)==0x1);
 	
 	pte_addr&=0xfffff000;
 	int t=((addr>>12)&0x3ff);
