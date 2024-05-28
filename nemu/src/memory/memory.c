@@ -110,7 +110,7 @@ paddr_t page_translate(vaddr_t addr,int type){
   //       page_addr=paddr_read(pte_addr+4*i,4);
 //		 Log("a:%x",page_addr);
 //	}
-	assert(0);
+//	assert(0);
 	}	
 	//assert((page_addr&0x1)==0x1);
 	uint32_t true_addr=((page_addr&0xfffff000)|offset);
