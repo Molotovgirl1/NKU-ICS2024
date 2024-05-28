@@ -13,6 +13,8 @@ CC = gcc
 LD = gcc
 INCLUDES  = $(addprefix -I, $(INC_DIR))
 CFLAGS   += -O2 -MMD -Wall -Werror -ggdb $(INCLUDES)
+COUNTLINE = $(shell find . \( -name "*.c" -or -name "*.h" \) | xargs cat | wc -l )
+COUNTADD = $(shell expr $(COUNTLINE) - 3487)
 
 # Files to be compiled
 SRCS = $(shell find src/ -name "*.c")
@@ -29,7 +31,7 @@ $(OBJ_DIR)/%.o: src/%.c
 
 # Some convinient rules
 
-.PHONY: app run submit clean
+.PHONY: app run submit clean count
 app: $(BINARY)
 
 ARGS ?= -l $(BUILD_DIR)/nemu-log.txt
@@ -38,7 +40,6 @@ ARGS ?= -l $(BUILD_DIR)/nemu-log.txt
 NEMU_EXEC := $(BINARY) $(ARGS)
 
 $(BINARY): $(OBJS)
-	$(call git_commit, "compile")
 	@echo + LD $@
 	@$(LD) -O2 -o $@ $^ -lSDL2 -lreadline
 
@@ -52,9 +53,8 @@ gdb: $(BINARY)
 
 clean: 
 	rm -rf $(BUILD_DIR)
-
-count:
-	git checkout pa0
-	find . -name "*.[ch]" |xargs cat|wc -l
-	git checkout pa1
-	find . -name "*.[ch]" |xargs cat|wc -l
+	
+count: 
+	@echo "Total lines now:" $(COUNTLINE)
+	@echo "Lines added now:" $(COUNTADD) 
+	
