@@ -57,8 +57,11 @@ typedef struct {
   } idtr;
   
   rtlreg_t cs;
-  rtlreg_t es; // 配x64
+  rtlreg_t es; 
   rtlreg_t ds;
+  uint32_t CR0;
+  uint32_t CR3;
+  bool INTR;
 } CPU_state;
 
 extern CPU_state cpu;
