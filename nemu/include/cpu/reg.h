@@ -53,10 +53,6 @@ typedef union{
 }CR0_t;
 
 typedef struct {
-  /* Do NOT change the order of the GPRs' definitions. */
-  /* In NEMU, rtlreg_t is exactly uint32_t. This makes RTL instructions
-   * in PA2 able to directly access these registers.
-   */
   union{
     union{
       uint32_t _32;
