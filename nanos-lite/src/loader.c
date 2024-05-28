@@ -1,12 +1,15 @@
 #include "common.h"
+#include "fs.h"
 
-#define DEFAULT_ENTRY ((void *)0x8048000)
+#define DEFAULT_ENTRY ((void *)0x4000000)
 
-extern int fs_open(const char *,int,int);
-extern int fs_close(int);
-extern size_t fs_filesz(int);
-extern void fs_read(int ,void *,size_t);
-extern void * new_page(void );
+extern uint8_t ramdisk_start;
+extern uint8_t ramdisk_end;
+void* new_page(void);
+
+#define RAMDISK_SIZE ((&ramdisk_end) - (&ramdisk_start))
+
+extern void ramdisk_read(void *buf, off_t offset, size_t len);
 
 uintptr_t loader(_Protect *as, const char *filename) {
  int fd = fs_open(filename, 0, 0);
@@ -26,4 +29,4 @@ uintptr_t loader(_Protect *as, const char *filename) {
  }
  fs_close(fd);
  return (uintptr_t)DEFAULT_ENTRY;
- }
+}
