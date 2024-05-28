@@ -13,6 +13,7 @@ void* new_page(void) {
 void free_page(void *p) {
   panic("not implement yet");
 }
+ extern int mm_brk(uint32_t new_brk);
 
 /* The brk() system call handler. */
  int mm_brk(uint32_t new_brk) {
@@ -27,8 +28,8 @@ void free_page(void *p) {
  		end -= PGSIZE;
  	  }
       for(uint32_t va = first; va <= end; va += PGSIZE) {
-      void *pa = new_page();
- 	  _map(&(current -> as), (void*)va, pa);
+        void *pa = new_page();
+ 	    _map(&(current -> as), (void*)va, pa);
  	  }
     	current -> max_brk = new_brk;
     }

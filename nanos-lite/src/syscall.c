@@ -1,7 +1,7 @@
 #include "common.h"
 #include "syscall.h"
 #include "fs.h"
-
+ extern int mm_brk(uint32_t new_brk);
 int sys_none() {
   return 1;
 }
@@ -40,7 +40,6 @@ int sys_lseek(int fd, off_t offset, int whence) {
 }
 
 int sys_brk(int addr) {
-   extern int mm_brk(uint32_t new_brk);
    return mm_brk(addr);
 }
 
