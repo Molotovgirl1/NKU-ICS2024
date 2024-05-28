@@ -31,7 +31,7 @@ int main() {
 
   init_fs();
 
-  // uint32_t entry = loader(NULL, "/bin/dummy");
+  // uint32_t entry = loader(NULL, "/bin/pal");
   load_prog("/bin/dummy");
   // ((void (*)(void))entry)();
   _trap();
