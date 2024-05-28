@@ -88,7 +88,7 @@ static int cmd_info(char *args) {
       printf("%s  0x%x\n", regsb[i], reg_b(i));
     }
     printf("eflags:");
-    printf("CR0  0x%x\n", cpu.CR0);
+    printf("CR0=0x%x CR0=0x%x\n", cpu.CR0,cpu.CR3);
     return 0;
   }
   //如果产生错误
