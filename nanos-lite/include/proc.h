@@ -12,7 +12,7 @@ typedef union {
     _RegSet *tf;
     _Protect as;
     uintptr_t cur_brk;
-    // we do not free memory, so use max_brk to determine when to call _map()
+    // we do not free memory, so use `max_brk' to determine when to call _map()
     uintptr_t max_brk;
   };
 } PCB;
