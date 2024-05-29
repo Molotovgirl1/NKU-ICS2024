@@ -38,10 +38,12 @@ static inline make_DopHelper(SI) {
    *
    op->simm = ???
    */
-  op->simm=instr_fetch(eip,op->width);
-  if(op->width==1){
-   op->simm=(int8_t)op->simm;
+  //TODO();
+  op -> simm = instr_fetch(eip, op -> width);
+  if(op -> width == 1) {
+    op -> simm = (int8_t)op -> simm;
   }
+
   rtl_li(&op->val, op->simm);
 
 #ifdef DEBUG
@@ -246,7 +248,7 @@ make_DHelper(gp2_Ib2E) {
 
 /* Ev <- GvIb
  * use for shld/shrd */
-make_DHelper(I_G2E) {
+make_DHelper(Ib_G2E) {
   decode_op_rm(eip, id_dest, true, id_src2, true);
   id_src->width = 1;
   decode_op_I(eip, id_src, true);
@@ -295,12 +297,6 @@ make_DHelper(out_a2I) {
   decode_op_I(eip, id_dest, true);
 }
 
-// make_DHelper(Ib_G2E) {
-//   decode_op_rm(eip, id_dest, true, id_src2, true);
-//   id_src->width = 1;
-//   decode_op_I(eip, id_src, true);
-// }
-
 make_DHelper(out_a2dx) {
   decode_op_a(eip, id_src, true);
 
@@ -310,6 +306,25 @@ make_DHelper(out_a2dx) {
 #ifdef DEBUG
   sprintf(id_dest->str, "(%%dx)");
 #endif
+}
+
+make_DHelper(lidt_a) {
+  decode_op_a(eip, id_dest, true);
+}
+
+make_DHelper(mov_load_cr) {
+ decode_op_rm(eip, id_dest, false, id_src, false);
+ rtl_load_cr(&id_src -> val, id_src -> reg);
+ #ifdef DEBUG
+ snprintf(id_src -> str, 5, "%%cr%d", id_dest -> reg);
+ #endif
+ }
+ 
+make_DHelper(mov_store_cr) {
+ decode_op_rm(eip, id_src, true, id_dest, false);
+ #ifdef DEBUG
+ snprintf(id_src -> str, 5, "%%cr%d", id_dest -> reg);
+ #endif
 }
 
 void operand_write(Operand *op, rtlreg_t* src) {
