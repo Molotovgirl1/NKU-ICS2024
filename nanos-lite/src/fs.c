@@ -96,8 +96,6 @@ ssize_t fs_write(int fd,void*buf,size_t count){
 	 ramdisk_write(buf,file_table[fd].disk_offset+open_offset,count);
 		file_table[fd].open_offset=open_offset+count;
 		return count;			
-		
-	
 	}
 }
 
