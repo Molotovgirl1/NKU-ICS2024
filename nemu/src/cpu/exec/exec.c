@@ -223,6 +223,7 @@ static inline void update_eip(void) {
   cpu.eip = (decoding.is_jmp ? (decoding.is_jmp = 0, decoding.jmp_eip) : decoding.seq_eip);
 }
 
+#define TIMER_IRQ 0x32
 void exec_wrapper(bool print_flag) {
 #ifdef DEBUG
   decoding.p = decoding.asm_buf;
@@ -246,7 +247,14 @@ void exec_wrapper(bool print_flag) {
   uint32_t eip = cpu.eip;
 #endif
 
+ update_eip();
+ extern void raise_intr(uint8_t,vaddr_t);
+ //Log("%x",cpu.EFLAGS.val);
+  if(cpu.INTR & cpu.eflags.IF){
+  cpu.INTR=false;
+  raise_intr(TIMER_IRQ,cpu.eip);
   update_eip();
+  }
 
 #ifdef DIFF_TEST
   void difftest_step(uint32_t);
