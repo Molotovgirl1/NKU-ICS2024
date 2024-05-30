@@ -17,6 +17,7 @@ size_t events_read(void *buf, size_t len) {
   if(key & 0x8000) {
       key ^= 0x8000;
       down = 1;
+      printf("down ok");
   }
   if(down && key == _KEY_F12) {
      extern void switch_current_game();
