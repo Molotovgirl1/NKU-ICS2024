@@ -26,7 +26,7 @@ void load_prog(const char *filename) {
   pcb[i].tf = _umake(&pcb[i].as, stack, stack, (void *)entry, NULL, NULL);
 }
 
-static int current_game = 0;
+int current_game = 0;
 void switch_current_game() {
   current_game = 2- current_game;
   Log("current_game = %d", current_game);
