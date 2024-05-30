@@ -21,7 +21,7 @@ static Finfo file_table[] __attribute__((used)) = {
 };
 
 #define NR_FILES (sizeof(file_table) / sizeof(file_table[0]))
-
+//对文件记录表中/dev/fb的大小进行初始化
 void init_fs() {
   // TODO: initialize the size of /dev/fb
   extern void getScreen(int *p_width, int *p_height);
@@ -68,30 +68,35 @@ int fs_open(const char*filename, int flags, int mode) {
 			return i;
 		}
 	}
-	panic("this file not exist");
+	panic("this file not exist:%s",filename);
 	return -1;
 }
 
 
 extern void fb_write(const void *buf, off_t offset, size_t len);
-ssize_t fs_write(int fd, void *buf, size_t len){
-  assert(fd >= 0 && fd < NR_FILES);
-  if(fd < 3 || fd == FD_DISPINFO) {
-    Log("arg invalid:fd<3");
-    return 0;
-  }
-  int n = fs_fliesz(fd) - get_open_offset(fd);
-  if(n > len) {
-    n = len;
-  }
-  if(fd == FD_FB){
-    fb_write(buf, get_open_offset(fd), n);
-  }
-  else {
-    ramdisk_write(buf, disk_offset(fd) + get_open_offset(fd), n);
-  }
-  set_open_offset(fd, get_open_offset(fd) + n);
-  return n;
+extern void ramdisk_write(const void*,off_t,size_t);
+ssize_t fs_write(int fd,void*buf,size_t count){
+   	off_t open_offset=file_table[fd].open_offset;
+	size_t size=file_table[fd].size;
+	if(fd==1||fd==2){
+		char*temp=(char*)buf;
+		for(int i=0;i<count;i++){
+		_putc(*(temp+i));
+		}
+		return count;	
+	}
+        else if(fd==FD_FB){
+	      count=(open_offset+count)<=size?count:size-open_offset;	
+              fb_write(buf,open_offset,count);
+	      file_table[3].open_offset=open_offset+count;
+              return count;	
+	}
+	else{
+     count=(open_offset+count)<=size?count:size-open_offset;		
+	 ramdisk_write(buf,file_table[fd].disk_offset+open_offset,count);
+		file_table[fd].open_offset=open_offset+count;
+		return count;			
+	}
 }
 
 void dispinfo_read(void *buf, off_t offset, size_t len);
@@ -121,7 +126,7 @@ ssize_t fs_read(int fd, void *buf, size_t len){
 
 int fs_close(int fd) {
   assert(fd >= 0 && fd < NR_FILES);
-  file_table[fd].open_offset = 0;
+//  file_table[fd].open_offset = 0;
   return 0;
 }
 
