@@ -14,7 +14,7 @@ size_t events_read(void *buf, size_t len) {
   char buffer[40];
   int key = _read_key();
   int down = 0;
- 
+  Log("key down:_KEY_F12, switch current game0!");
   if(key & 0x8000) {
       key ^= 0x8000;
       down = 1;
