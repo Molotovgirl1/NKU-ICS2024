@@ -10,32 +10,31 @@ static const char *keyname[256] __attribute__((used)) = {
 //函数声明
 extern void getScreen(int* p_width, int* p_height);
 
-size_t events_read(void *buf, size_t len) {
-  char buffer[40];
-  int key = _read_key();
-  int down = 0;
-  if(key & 0x8000) {
-      key ^= 0x8000;
-      down = 1;
-  }
-  if(down && key == _KEY_F12) {
-     extern void switch_current_game();
-     switch_current_game();
-     Log("key down:_KEY_F12, switch current game0!");
-  }
-  if(key != _KEY_NONE) {
-     sprintf(buffer, "%s %s\n", down ? "kd": "ku", keyname[key]);
-  }
-  else {
-      sprintf(buffer,"t %d\n", _uptime());
-  }
-  if(strlen(buffer) <= len) { 
-    strncpy((char*)buf, buffer,strlen(buffer));
-	  return strlen(buffer);
-  } 
-  Log("strlen(event)>len, return 0");
-  
-  return 0;
+size_t events_read(void * buf, size_t len) {
+    char buffer[40];
+    int key = _read_key();
+    int down = 0;
+    if (key & 0x8000) {
+        key ^= 0x8000;
+        down = 1;
+    }
+    if (down && key == _KEY_F12) {
+        extern void switch_current_game();
+        switch_current_game();
+        Log("key down:_KEY_F12, switch current game0!");
+    }
+    if (key != _KEY_NONE) {
+        sprintf(buffer, "%s %s\n", down ? "kd" : "ku", keyname[key]);
+    } else {
+        sprintf(buffer, "t %d\n", _uptime());
+    }
+    if (strlen(buffer) <= len) {
+        strncpy((char * ) buf, buffer, strlen(buffer));
+        return strlen(buffer);
+    }
+    Log("strlen(event)>len, return 0");
+
+    return 0;
 }
 
 static char dispinfo[128] __attribute__((used));
