@@ -11,6 +11,7 @@ void* new_page(void);
 
 extern void ramdisk_read(void *buf, off_t offset, size_t len);
 
+//加载程序
 uintptr_t loader(_Protect *as, const char *filename) {
  int fd = fs_open(filename, 0, 0);
  Log("filename=%s,fd=%d",filename,fd);
