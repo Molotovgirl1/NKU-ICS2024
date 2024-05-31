@@ -6,7 +6,7 @@ static _RegSet* (*H)(_Event, _RegSet*) = NULL;
 void vecsys();
 void vecnull();
 void vecself();
-void vectime();
+void vectime(); //时钟中断
 
 _RegSet* irq_handle(_RegSet *tf) {
   _RegSet *next = tf;
