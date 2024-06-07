@@ -3,13 +3,30 @@
 #include <assert.h>
 
 FLOAT F_mul_F(FLOAT a, FLOAT b) {
-  assert(0);
-  return 0;
+    assert(-((int64_t)1 << 32) < ((int64_t) a * (int64_t) b) >> 16 &&
+                   ((int64_t) a * (int64_t) b) >> 16 < ((int64_t)1 << 32));
+    return ((int64_t) a * (int64_t) b) >> 16;
 }
 
 FLOAT F_div_F(FLOAT a, FLOAT b) {
-  assert(0);
-  return 0;
+    int op = 1;
+    if(a < 0) {
+        op = -op;
+        a = -a;
+    }
+    if(b < 0) {
+        op = -op;
+        b = -b;
+    }
+    int ret = a / b;
+    a %= b;
+    int i;
+    for (i = 0;i < 16;i ++){
+        a <<= 1;
+        ret <<= 1;
+        if (a >= b) a -= b, ret |= 1;
+    }
+    return op * ret;
 }
 
 FLOAT f2F(float a) {
