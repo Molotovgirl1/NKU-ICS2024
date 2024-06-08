@@ -92,3 +92,8 @@ FLOAT Fpow(FLOAT x, FLOAT y) {
 
   return t;
 }
+
+FLOAT Fabs(FLOAT a)
+{
+  return (a > 0) ? a : -a;
+}
