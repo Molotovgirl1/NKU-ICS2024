@@ -1,12 +1,33 @@
 #include "FLOAT.h"
 #include <stdint.h>
 #include <assert.h>
+#include <string.h>
 
 FLOAT F_mul_F(FLOAT a, FLOAT b) {
     assert(-((int64_t)1 << 32) < ((int64_t) a * (int64_t) b) >> 16 &&
                    ((int64_t) a * (int64_t) b) >> 16 < ((int64_t)1 << 32));
     return ((int64_t) a * (int64_t) b) >> 16;
 }
+
+// FLOAT F_div_F(FLOAT a, FLOAT b) {
+//   FLOAT result = Fabs(a) / Fabs(b);
+//   FLOAT m = Fabs(a);
+//   FLOAT n = Fabs(b);
+//   m = m % n;
+
+//   for (int i = 0; i < 16; i++) {
+//     m <<= 1;
+//     result <<= 1;
+//     if (m >= n) {
+//       m -= n;
+//       result++;
+//     }
+//   }
+//   if (((a ^ b) & 0x80000000) == 0x80000000) {
+//     result = -result;
+//   }
+//   return result;
+// }
 
 FLOAT F_div_F(FLOAT a, FLOAT b) {
     int op = 1;
@@ -27,6 +48,7 @@ FLOAT F_div_F(FLOAT a, FLOAT b) {
         if (a >= b) a -= b, ret |= 1;
     }
     return op * ret;
+
 }
 
 FLOAT f2F(float a) {
@@ -62,21 +84,19 @@ FLOAT f2F(float a) {
   return f.signal == 0 ? result : (result|(1<<31));
 }
 
-FLOAT Fabs(FLOAT a) {
-  assert(0);
-  return 0;
-}
-
 /* Functions below are already implemented */
+FLOAT Fabs(FLOAT a)
+{
+  return (a > 0) ? a : -a;
+}
 
 FLOAT Fsqrt(FLOAT x) {
   FLOAT dt, t = int2F(2);
-
+  
   do {
     dt = F_div_int((F_div_F(x, t) - t), 2);
     t += dt;
   } while(Fabs(dt) > f2F(1e-4));
-
   return t;
 }
 
@@ -89,11 +109,5 @@ FLOAT Fpow(FLOAT x, FLOAT y) {
     dt = (F_div_F(x, t2) - t) / 3;
     t += dt;
   } while(Fabs(dt) > f2F(1e-4));
-
   return t;
-}
-
-FLOAT Fabs(FLOAT a)
-{
-  return (a > 0) ? a : -a;
 }
